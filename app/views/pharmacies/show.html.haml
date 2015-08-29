@@ -1,0 +1,25 @@
+%p#notice= notice
+%p
+  %strong Name:
+  = @pharmacy.name
+%p
+  %strong Structure:
+  = @pharmacy.structure
+%p
+  %strong County:
+  = @pharmacy.county
+%p
+  %strong City:
+  = @pharmacy.city
+%p
+  %strong Address:
+  = @pharmacy.address
+%p
+  %strong Chief pharmacist name:
+  = @pharmacy.chief_pharmacist_name
+%p
+  %strong Details:
+  = @pharmacy.details
+= link_to 'Edit', edit_pharmacy_path(@pharmacy)
+|
+= link_to 'Back', pharmacies_path
