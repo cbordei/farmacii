@@ -1,17 +1,14 @@
 %p#notice= notice
-%h1 Listing Pharmacies
-= search_form_for @q do |f|
-  = f.label :name_cont
-  = f.search_field :name_cont 
+.container-fluid
+  .row.page-header
+    .col-md-8      
+      %h1 Listing Pharmacies
+    .col-md-4
+      = link_to 'New Pharmacy', new_pharmacy_path, :class => " btn btn-default"
 
-  = f.label :county_cont
-  = f.search_field :county_cont
+= render 'search_form'
 
-  = f.label :city_cont
-  = f.search_field :city_cont
-
-  = f.submit 
-%table
+%table.table.table-striped
   %thead
     %tr
       %th Name
@@ -25,16 +22,15 @@
   %tbody
     - @pharmacies.each do |pharmacy|
       %tr
-        %td= pharmacy.name
+        %td= link_to pharmacy.name, pharmacy
         %td= pharmacy.structure
         %td= pharmacy.county
         %td= pharmacy.city
         %td= pharmacy.address
         %td= pharmacy.chief_pharmacist_name
         %td= pharmacy.details
-        %td= link_to 'Show', pharmacy
-        %td= link_to 'Edit', edit_pharmacy_path(pharmacy)
-        %td= link_to 'Destroy', pharmacy, method: :delete, data: { confirm: 'Are you sure?' }
+        %td= link_to 'Edit', edit_pharmacy_path(pharmacy), :class => " btn btn-default"
+        %td= link_to 'Destroy', pharmacy, method: :delete, data: { :confirm => 'Are you sure?'}, :class => " btn btn-danger"
 %br/
-= paginate @pharmacies
-= link_to 'New Pharmacy', new_pharmacy_path
+.text-center
+  = paginate @pharmacies

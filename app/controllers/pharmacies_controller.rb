@@ -1,6 +1,7 @@
 class PharmaciesController < ApplicationController
   before_action :set_pharmacy, only: [:show, :edit, :update, :destroy]
-
+  before_filter :authenticate_admin_user!
+  
   PER_PAGE = 12
   # GET /pharmacies
   def index
