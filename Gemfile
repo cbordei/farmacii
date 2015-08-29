@@ -26,6 +26,7 @@ gem "uglifier"
 gem 'haml'
 gem 'devise'
 gem 'turbolinks'
+gem 'roo-xls'
 
 group :development do
   gem "spring"
