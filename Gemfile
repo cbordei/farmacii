@@ -27,6 +27,8 @@ gem 'haml'
 gem 'devise'
 gem 'turbolinks'
 gem 'roo-xls'
+gem 'ransack'
+gem 'kaminari'
 
 group :development do
   gem "spring"

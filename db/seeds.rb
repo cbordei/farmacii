@@ -16,9 +16,10 @@ files.each do |file|
     next if spreadsheet.nil?
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
+      row = Hash[[header, spreadsheet.row(i)].transpose]     
+      
       pharmacies << {
-        name: row[" "],
+        name: row[" "].nil? ? row["DENUMIRE"] : row[" "],
         structure: row["IN STRUCTURA"],
         county: row["JUD/SECT"],
         city: row["LOCALITATE"],

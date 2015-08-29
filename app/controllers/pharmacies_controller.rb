@@ -1,9 +1,11 @@
 class PharmaciesController < ApplicationController
   before_action :set_pharmacy, only: [:show, :edit, :update, :destroy]
 
+  PER_PAGE = 12
   # GET /pharmacies
   def index
-    @pharmacies = Pharmacy.all
+    @q = Pharmacy.ransack(params[:q])
+    @pharmacies = @q.result.page(params[:page]).per(PER_PAGE)
   end
 
   # GET /pharmacies/1

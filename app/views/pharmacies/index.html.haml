@@ -1,5 +1,16 @@
 %p#notice= notice
 %h1 Listing Pharmacies
+= search_form_for @q do |f|
+  = f.label :name_cont
+  = f.search_field :name_cont 
+
+  = f.label :county_cont
+  = f.search_field :county_cont
+
+  = f.label :city_cont
+  = f.search_field :city_cont
+
+  = f.submit 
 %table
   %thead
     %tr
@@ -25,4 +36,5 @@
         %td= link_to 'Edit', edit_pharmacy_path(pharmacy)
         %td= link_to 'Destroy', pharmacy, method: :delete, data: { confirm: 'Are you sure?' }
 %br/
+= paginate @pharmacies
 = link_to 'New Pharmacy', new_pharmacy_path
