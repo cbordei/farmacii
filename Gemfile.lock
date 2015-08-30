@@ -118,6 +118,7 @@ GEM
       activesupport
       capybara
       i18n
+    geocoder (1.2.9)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     haml (4.0.7)
@@ -137,6 +138,7 @@ GEM
       i18n
       term-ansicolor (>= 1.3.2)
       terminal-table (>= 1.5.1)
+    iconv (1.0.4)
     jquery-rails (4.0.4)
       rails-dom-testing (~> 1.0)
       railties (>= 4.2.0)
@@ -329,8 +331,10 @@ DEPENDENCIES
   factory_girl_rails
   flutie
   formulaic
+  geocoder
   haml
   i18n-tasks
+  iconv
   jquery-rails
   kaminari
   launchy

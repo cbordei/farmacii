@@ -29,6 +29,8 @@ gem 'turbolinks'
 gem 'roo-xls'
 gem 'ransack'
 gem 'kaminari'
+gem 'geocoder'
+gem 'iconv'
 
 group :development do
   gem "spring"
