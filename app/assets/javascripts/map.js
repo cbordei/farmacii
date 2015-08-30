@@ -29,28 +29,40 @@ function initMap() {
 
   // Get pharmacies and put them on the map
   google.maps.event.addListener(map, 'idle', function(){
-      getCityName(map.getCenter().G, map.getCenter().K, function(data){
-        city_name = data;
-        if($.inArray(city_name, cities_loaded) < 0) {
-          cities_loaded.push(city_name);
-          $.ajax({
-            url: places_url,
-            type: "GET",
-            dataType: "json",
-            data: {'city_name': city_name},
-            success: function(pharmacies) {
-              for (var i = 0; i < pharmacies.length; i++) {
-                pharmacy = pharmacies[i];
-                if(typeof markers[pharmacy.id] === 'undefined'){
-                  position = {lat: pharmacy.latitude, lng: pharmacy.longitude};                               
-                  addMarkerWithTimeout(pharmacy.id, position, (i+1)*300, map);
-                  addPharmacyToList(pharmacy, i);                 
-                }              
-              }               
-            },          
-          });
+    getCityName(map.getCenter().G, map.getCenter().K, function(data){      
+      if(!(typeof city_name === 'undefined') && (city_name != data)) {
+        // City changed - clear data
+        for(marker_index in markers) {
+          if(!(typeof markers[marker_index] === 'undefined')) {
+            debugger
+            markers[marker_index].setMap(map);
+            markers = {};
+            $("#pharmacies").html('');
+          }
         }
-      });
+      }
+      city_name = data;
+      if($.inArray(city_name, cities_loaded) < 0) {
+        cities_loaded.push(city_name);
+        $.ajax({
+          url: places_url,
+          type: "GET",
+          dataType: "json",
+          data: {'city_name': city_name},
+          success: function(pharmacies) {
+            for (var i = 0; i < pharmacies.length; i++) {
+              pharmacy = pharmacies[i];
+              if(typeof markers[pharmacy.id] === 'undefined'){
+                position = {lat: pharmacy.latitude, lng: pharmacy.longitude}; 
+                first = i==0 ? true : false;                     
+                addMarkerWithTimeout(pharmacy.id, position, (i+1)*200, map, first);
+                addPharmacyToList(pharmacy, i);                 
+              }              
+            }               
+          },          
+        });
+      }
+    });
   });
 
 
@@ -67,13 +79,14 @@ function handleLocationError(browserHasGeolocation, pos) {
   infoWindow.setContent();
 }
 
-function addMarkerWithTimeout(pharmacy_id, position, timeout, map) {
+function addMarkerWithTimeout(pharmacy_id, position, timeout, map, first) {
   window.setTimeout(function() {
+    icon = first ? pharmacy_icon_big : pharmacy_icon;
     marker = new google.maps.Marker({
       position: position,
       map: map,
       animation: google.maps.Animation.DROP,
-      icon: pharmacy_icon
+      icon: icon
     });
     markers[pharmacy_id] = marker;
     marker.addListener('click', function() {
@@ -83,6 +96,11 @@ function addMarkerWithTimeout(pharmacy_id, position, timeout, map) {
       $(".list-group-item").removeClass("active");
       $("a[data-id='"+pharmacy_id+"']").addClass("active");
       this.setIcon(pharmacy_icon_big);
+      var container = $('#scroll_area'),
+      scrollTo = $("a[data-id='"+pharmacy_id+"']");
+      container.animate({
+          scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+      });
     });
   }, timeout);
 }
@@ -115,6 +133,5 @@ function addPharmacyToList(pharmacy, index) {
     +'" href="/pharmacies/'+pharmacy.id
     +'" class="list-group-item '+active+'"><h4 class="list-group-item-heading">'
     +pharmacy.name+'</h4><p class="list-group-item-text">'
-    +pharmacy.address+'</p><p class="list-group-item-text">'
-    +pharmacy.chief_pharmacist_name+'</p></a>');
+    +pharmacy.address+'</p></a>');
 }
