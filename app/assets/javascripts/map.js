@@ -166,9 +166,11 @@ function loadPharmacies(city_name, page, map) {
       for (var i = 0; i < pharmacies.length; i++) {
         pharmacy = pharmacies[i];
         if(typeof markers[pharmacy.id] === 'undefined'){
-          position = {lat: pharmacy.latitude, lng: pharmacy.longitude}; 
-          first = i==0 ? true : false;      
-          addMarkerWithTimeout(pharmacy.id, position, (i+1)*200, map, first);
+          if(pharmacy.latitude && pharmacy.longitude) {
+            position = {lat: pharmacy.latitude, lng: pharmacy.longitude}; 
+            first = i==0 ? true : false;      
+            addMarkerWithTimeout(pharmacy.id, position, (i+1)*200, map, first);
+          }
           addPharmacyToList(pharmacy, i);                 
         }              
       }               
