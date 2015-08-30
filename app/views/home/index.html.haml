@@ -1,10 +1,14 @@
-#map{style: "width:100%; height:700px"}
+.col-xs-3.col-sm-3.col-md-3.col-lg-3.scrollit
+  .list-group#pharmacies
+
+#map{style: "width:auto; height:700px"}
 :javascript
   var map;
   var zoom_level = 13;
   var user_icon = "#{asset_path('pin74.png')}";
   var pharmacy_icon = "#{asset_path('plus54.png')}";
-  var markers = [];
+  var pharmacy_icon_big = "#{asset_path('plus54_big.png')}";
+  var markers = {};
   var cities_loaded = [];
   var places_url = "#{api_places_path}"
 

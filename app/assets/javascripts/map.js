@@ -4,7 +4,7 @@ function initMap() {
     zoom: zoom_level
   });    
 
-  var marker = new google.maps.Marker({
+  var user_marker = new google.maps.Marker({
     icon: user_icon,
     map: map
   });
@@ -16,7 +16,7 @@ function initMap() {
         lng: position.coords.longitude
       };
 
-      marker.setPosition(pos);
+      user_marker.setPosition(pos);
       map.setCenter(pos);
     }, function() {
       handleLocationError(true, map.getCenter());
@@ -42,16 +42,17 @@ function initMap() {
               for (var i = 0; i < pharmacies.length; i++) {
                 pharmacy = pharmacies[i];
                 if(typeof markers[pharmacy.id] === 'undefined'){
-                  position = {lat: pharmacy.latitude, lng: pharmacy.longitude};                
+                  position = {lat: pharmacy.latitude, lng: pharmacy.longitude};                               
                   addMarkerWithTimeout(pharmacy.id, position, (i+1)*300, map);
+                  addPharmacyToList(pharmacy, i);                 
                 }              
-              }
-
+              }               
             },          
           });
         }
       });
   });
+
 
 }
 
@@ -75,6 +76,14 @@ function addMarkerWithTimeout(pharmacy_id, position, timeout, map) {
       icon: pharmacy_icon
     });
     markers[pharmacy_id] = marker;
+    marker.addListener('click', function() {
+      for(aux_marker in markers) {
+        markers[aux_marker].setIcon(pharmacy_icon);
+      }
+      $(".list-group-item").removeClass("active");
+      $("a[data-id='"+pharmacy_id+"']").addClass("active");
+      this.setIcon(pharmacy_icon_big);
+    });
   }, timeout);
 }
 
@@ -96,4 +105,16 @@ function getCityName(lat, lng, callback) {
       } 
     } 
   });
+}
+
+
+
+function addPharmacyToList(pharmacy, index) {
+  active = index == 0 ? 'active' : '';
+  $("#pharmacies").append('<a data-id="'+pharmacy.id
+    +'" href="/pharmacies/'+pharmacy.id
+    +'" class="list-group-item '+active+'"><h4 class="list-group-item-heading">'
+    +pharmacy.name+'</h4><p class="list-group-item-text">'
+    +pharmacy.address+'</p><p class="list-group-item-text">'
+    +pharmacy.chief_pharmacist_name+'</p></a>');
 }
