@@ -8,6 +8,37 @@ function initMap() {
     icon: user_icon,
     map: map
   });
+
+  var input = document.getElementById('pac-input');
+  var searchBox = new google.maps.places.SearchBox(input);
+  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  searchBox.addListener('places_changed', function() {
+    var places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+      return;
+    }
+
+    // Clear out the old markers.
+    for(marker_index in markers) {
+      if(!(typeof markers[marker_index] === 'undefined')) {
+        markers[marker_index].setMap(null);        
+        $("#pharmacies").html('');
+      }
+    }
+    markers = {};
+
+    var bounds = new google.maps.LatLngBounds();
+    place = places[0];
+    if (place.geometry.viewport) {
+      // Only geocodes have viewport.
+      bounds.union(place.geometry.viewport);
+    } else {
+      bounds.extend(place.geometry.location);
+    }    
+    map.fitBounds(bounds);
+  });
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -34,12 +65,14 @@ function initMap() {
         // City changed - clear data
         for(marker_index in markers) {
           if(!(typeof markers[marker_index] === 'undefined')) {
-            debugger
-            markers[marker_index].setMap(map);
-            markers = {};
+            markers[marker_index].setMap(null);
+            
             $("#pharmacies").html('');
           }
         }
+        markers = {};
+        // Remove the city from the cities array
+        cities_loaded[$.inArray(city_name, cities_loaded)] = "";
       }
       city_name = data;
       if($.inArray(city_name, cities_loaded) < 0) {
