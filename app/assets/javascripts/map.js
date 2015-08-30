@@ -1,5 +1,6 @@
 google.maps.event.addDomListener(window, 'load', initMap);
 function initMap() {
+  var page = 1;
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: zoom_level
   });    
@@ -65,40 +66,28 @@ function initMap() {
         // City changed - clear data
         for(marker_index in markers) {
           if(!(typeof markers[marker_index] === 'undefined')) {
-            markers[marker_index].setMap(null);
-            
+            markers[marker_index].setMap(null);            
             $("#pharmacies").html('');
           }
         }
         markers = {};
         // Remove the city from the cities array
         cities_loaded[$.inArray(city_name, cities_loaded)] = "";
+        // Reset Page
+        page = 1;
       }
       city_name = data;
       if($.inArray(city_name, cities_loaded) < 0) {
         cities_loaded.push(city_name);
-        $.ajax({
-          url: places_url,
-          type: "GET",
-          dataType: "json",
-          data: {'city_name': city_name},
-          success: function(pharmacies) {
-            for (var i = 0; i < pharmacies.length; i++) {
-              pharmacy = pharmacies[i];
-              if(typeof markers[pharmacy.id] === 'undefined'){
-                position = {lat: pharmacy.latitude, lng: pharmacy.longitude}; 
-                first = i==0 ? true : false;                     
-                addMarkerWithTimeout(pharmacy.id, position, (i+1)*200, map, first);
-                addPharmacyToList(pharmacy, i);                 
-              }              
-            }               
-          },          
-        });
+        loadPharmacies(city_name, page, map);
       }
     });
   });
 
-
+  $("#load_more").click(function(){
+    page=page+1;
+    loadPharmacies(city_name, page, map);
+  });
 }
 
 function handleLocationError(browserHasGeolocation, pos) {
@@ -158,8 +147,6 @@ function getCityName(lat, lng, callback) {
   });
 }
 
-
-
 function addPharmacyToList(pharmacy, index) {
   active = index == 0 ? 'active' : '';
   $("#pharmacies").append('<a data-id="'+pharmacy.id
@@ -168,3 +155,25 @@ function addPharmacyToList(pharmacy, index) {
     +pharmacy.name+'</h4><p class="list-group-item-text">'
     +pharmacy.address+'</p></a>');
 }
+
+function loadPharmacies(city_name, page, map) {
+  $.ajax({
+    url: places_url,
+    type: "GET",
+    dataType: "json",
+    data: {'city_name': city_name, 'page': page },
+    success: function(pharmacies) {
+      for (var i = 0; i < pharmacies.length; i++) {
+        pharmacy = pharmacies[i];
+        if(typeof markers[pharmacy.id] === 'undefined'){
+          position = {lat: pharmacy.latitude, lng: pharmacy.longitude}; 
+          first = i==0 ? true : false;      
+          addMarkerWithTimeout(pharmacy.id, position, (i+1)*200, map, first);
+          addPharmacyToList(pharmacy, i);                 
+        }              
+      }               
+    },          
+  });
+}
+
+
