@@ -1,4 +1,5 @@
 google.maps.event.addDomListener(window, 'load', initMap);
+
 function initMap() {
   var page = 1;
   var map = new google.maps.Map(document.getElementById('map'), {
