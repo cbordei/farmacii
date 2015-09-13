@@ -5,8 +5,12 @@ class CommentsController < ApplicationController
     @pharmacy = Pharmacy.find(params[:pharmacy_id])
     @comment = @pharmacy.comments.build(comment_params)
     @comment.commenter = current_user.username ? current_user.username : current_user.email
-    @comment.save!
-    redirect_to pharmacy_path(@pharmacy)
+
+    if @comment.save
+      redirect_to @pharmacy
+    else
+      redirect_to @pharmacy, :flash => { :error => "Comment cannot be blank!" }
+    end
   end
  
   private

@@ -47,9 +47,8 @@
                 = comment.body
               %span.date.sub-text 
                 = "on " + cool_date_format(comment.created_at)
-      - if current_user  
+      - if current_user        
         = simple_form_for(@pharmacy.comments.build, url: pharmacy_comments_path(@pharmacy), html: { class: 'form-vertical' }) do |f|
-          = f.error_notification
           .form-group
             = f.input :body, {:placeholder => "Your comment", :type => "text", label: false}
           .form-group
