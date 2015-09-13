@@ -130,14 +130,10 @@ function addMarkerWithTimeout(pharmacy, position, timeout, map, first) {
       icon: icon
     });
 
-    if(first) {
-      infoWindow = new google.maps.InfoWindow({
-        content: '<h4 class="list-group-item-heading">'
-                  +pharmacy.name+'</h4><p class="list-group-item-text">'
-                  +pharmacy.address+'</p>'
-      });
-      infoWindow.open(map, marker);
+    if(infoWindow) {
+      infoWindow.close();
     }
+
     markers[pharmacy.id] = marker;
     
     marker.addListener('click', function() {
