@@ -8,11 +8,12 @@
 #map
 :javascript
   var map;
-  var zoom_level = 13;
+  var zoom_level = 15;
   var user_icon = "#{asset_path('pin74.png')}";
   var pharmacy_icon = "#{asset_path('plus54.png')}";
   var pharmacy_icon_big = "#{asset_path('plus54_big.png')}";
   var markers = {};
   var cities_loaded = [];
-  var places_url = "#{api_places_path}"
+  var places_url = "#{api_places_path}";
+  var range = 0.5;
 

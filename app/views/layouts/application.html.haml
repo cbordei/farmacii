@@ -7,7 +7,7 @@
     %meta{:content => "#{content_for?(:description) ? yield(:description) : "Farmacii"}", :name => "description"}/
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true    
     = csrf_meta_tags
-    %script{:type => "text/javascript", :src  => "https://maps.googleapis.com/maps/api/js?libraries=places"}
+    %script{:type => "text/javascript", :src  => "https://maps.googleapis.com/maps/api/js?libraries=places,geometry"}
   %body
     %header
       = render 'layouts/navigation'

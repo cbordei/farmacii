@@ -2,6 +2,8 @@ google.maps.event.addDomListener(window, 'load', initMap);
 
 function initMap() {
   var page = 1;
+  var center = null;
+
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: zoom_level
   });    
@@ -62,6 +64,22 @@ function initMap() {
 
   // Get pharmacies and put them on the map
   google.maps.event.addListener(map, 'idle', function(){
+
+    if (center == null) {
+      //it's the first time
+      center = map.getCenter();
+      loadPharmacies(center.G, center.K, map);
+      return true;
+    }
+
+    if (newCenterIsFurtherThanRange(map.getCenter(), center)) {
+      center = map.getCenter();
+      loadPharmacies(center.G, center.K, map);
+      return true;
+    }
+    
+    
+    
     getCityName(map.getCenter().G, map.getCenter().K, function(data){      
       if(!(typeof city_name === 'undefined') && (city_name != data)) {
         // City changed - clear data
@@ -78,17 +96,17 @@ function initMap() {
         page = 1;
       }
       city_name = data;
-      if($.inArray(city_name, cities_loaded) < 0) {
-        cities_loaded.push(city_name);
-        loadPharmacies(city_name, page, map);
-      }
     });
   });
+}
 
-  $("#load_more").click(function(){
-    page=page+1;
-    loadPharmacies(city_name, page, map);
-  });
+
+function newCenterIsFurtherThanRange(newCenter, oldCenter) {
+  p1 = new google.maps.LatLng(newCenter.G, newCenter.K);
+  p2 = new google.maps.LatLng(oldCenter.G, oldCenter.K);
+  distance = (google.maps.geometry.spherical.computeDistanceBetween(p1, p2) / 1000).toFixed(2);
+
+  return distance > range
 }
 
 function handleLocationError(browserHasGeolocation, pos) {
@@ -157,12 +175,12 @@ function addPharmacyToList(pharmacy, index) {
     +pharmacy.address+'</p></a>');
 }
 
-function loadPharmacies(city_name, page, map) {
+function loadPharmacies(lat, long, map) {
   $.ajax({
     url: places_url,
     type: "GET",
     dataType: "json",
-    data: {'city_name': city_name, 'page': page },
+    data: {'lat': lat, 'long': long },
     success: function(pharmacies) {
       for (var i = 0; i < pharmacies.length; i++) {
         pharmacy = pharmacies[i];

@@ -31,6 +31,7 @@ gem 'ransack'
 gem 'kaminari'
 gem 'geocoder'
 gem 'iconv'
+gem 'activerecord-postgis-adapter'
 
 group :development do
   gem "spring"
