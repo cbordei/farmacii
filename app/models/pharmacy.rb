@@ -1,7 +1,8 @@
 class Pharmacy < ActiveRecord::Base
   # geocoded_by :full_address
   # after_validation :geocode  
-        
+  has_many :comments
+  
   def self.close_to(lat, long, range_km = 0.5)
     where(
         "ST_DWithin(Geography(ST_MakePoint(#{long}, #{lat})),

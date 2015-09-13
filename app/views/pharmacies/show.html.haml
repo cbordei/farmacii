@@ -1,28 +1,65 @@
-.page-header
-  %h1 Pharmacy Details
-%dl.dl-horizontal
-  %dt
-    %strong Name
-  %dd= @pharmacy.name
-  %dt
-    %strong Structure
-  %dd= @pharmacy.structure
-  %dt
-    %strong County
-  %dd= @pharmacy.county
-  %dt
-    %strong City
-  %dd= @pharmacy.city
-  %dt
-    %strong Address
-  %dd= @pharmacy.address
-  %dt
-    %strong Chief Pharmacist Name
-  %dd= @pharmacy.chief_pharmacist_name
-  %dt
-    %strong Details
-  %dd= @pharmacy.details
+.container
+  .container-fluid
+    .row.page-header
+      .col-md-8      
+        %h1 Pharmacy details
+  %dl.dl-horizontal
+    %dt
+      %strong Name
+    %dd= @pharmacy.name
+    %dt
+      %strong Structure
+    %dd= @pharmacy.structure
+    %dt
+      %strong County
+    %dd= @pharmacy.county
+    %dt
+      %strong City
+    %dd= @pharmacy.city
+    %dt
+      %strong Address
+    %dd= @pharmacy.address
+    %dt
+      %strong Chief Pharmacist Name
+    %dd= @pharmacy.chief_pharmacist_name
+    %dt
+      %strong Details
+    %dd= @pharmacy.details
+  .detailBox
+    .actionBox
+      %ul.commentList
+        %li
+          .commenterImage
+            %img{:src => asset_path("profile.png")}/
+          .commentText
+            %p 
+              %b User123: 
+              Hello this is a test comment and this comment is particularly very long and it goes on and on and on.
+            %span.date.sub-text on March 5th, 2014 
+        - @pharmacy.comments.each do |comment|
+          %li
+            .commenterImage
+              %img{:src => asset_path("profile.png")}/
+            .commentText
+              %p
+                %b 
+                  = comment.commenter + ": "
+                = comment.body
+              %span.date.sub-text 
+                = "on " + cool_date_format(comment.created_at)
+      - if current_user  
+        = simple_form_for(@pharmacy.comments.build, url: pharmacy_comments_path(@pharmacy), html: { class: 'form-vertical' }) do |f|
+          = f.error_notification
+          .form-group
+            = f.input :body, {:placeholder => "Your comment", :type => "text", label: false}
+          .form-group
+            = f.button :submit, 'Add Comment'
+      - else
+        %p 
+          = link_to 'Sign in', new_user_session_path
+          to comment
 
-=link_to 'Back', pharmacies_path, :class => "btn btn-default"
-=link_to 'Edit', edit_pharmacy_path(@pharmacy), :class => "btn btn-default"
-=link_to 'Destroy', @pharmacy, method: :delete, data: { :confirm => 'Are you sure?'}, :class => "btn btn-danger"
+  =link_to 'Back', request.referrer, :class => "btn btn-default"
+  - if user_is_admin?
+    =link_to 'Edit', edit_pharmacy_path(@pharmacy), :class => "btn btn-default"
+    =link_to 'Destroy', @pharmacy, method: :delete, data: { :confirm => 'Are you sure?'}, :class => "btn btn-danger"

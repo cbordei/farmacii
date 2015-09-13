@@ -1,5 +1,8 @@
-google.maps.event.addDomListener(window, 'load', initMap);
+if(location.pathname == "/") {
+  google.maps.event.addDomListener(window, 'load', initMap);  
+}
 
+  
 function initMap() {
   var page = 1;
   var center = null;
@@ -144,8 +147,8 @@ function addMarkerWithTimeout(pharmacy, position, timeout, map, first) {
         markers[aux_marker].setIcon(pharmacy_icon);        
       }
       infoWindow = new google.maps.InfoWindow({
-        content: '<h4 class="list-group-item-heading">'
-                  +pharmacy.name+'</h4><p class="list-group-item-text">'
+        content: '<a href="pharmacies/'+pharmacy.id+'"><h4 class="list-group-item-heading">'
+                  +pharmacy.name+'</h4></a><p class="list-group-item-text">'
                   +pharmacy.address+'</p>'
       });
       infoWindow.open(map, this);

@@ -1,12 +1,13 @@
-= simple_form_for(@pharmacy, html: { class: 'form-vertical' }) do |f|
-  = f.error_notification
-  .form-inputs
-    = f.input :name
-    = f.input :structure
-    = f.input :county
-    = f.input :city
-    = f.input :address
-    = f.input :chief_pharmacist_name
-    = f.input :details
-  .form-actions
-    = f.button :submit
+.container
+  = simple_form_for(@pharmacy, html: { class: 'form-vertical' }) do |f|
+    = f.error_notification
+    .form-inputs
+      = f.input :name
+      = f.input :structure
+      = f.input :county
+      = f.input :city
+      = f.input :address
+      = f.input :chief_pharmacist_name
+      = f.input :details
+    .form-actions
+      = f.button :submit
