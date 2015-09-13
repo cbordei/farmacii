@@ -120,7 +120,7 @@ function handleLocationError(browserHasGeolocation, pos) {
   infoWindow.setContent();
 }
 
-function addMarkerWithTimeout(pharmacy_id, position, timeout, map, first) {
+function addMarkerWithTimeout(pharmacy, position, timeout, map, first) {
   window.setTimeout(function() {
     icon = first ? pharmacy_icon_big : pharmacy_icon;
     marker = new google.maps.Marker({
@@ -129,19 +129,31 @@ function addMarkerWithTimeout(pharmacy_id, position, timeout, map, first) {
       animation: google.maps.Animation.DROP,
       icon: icon
     });
-    markers[pharmacy_id] = marker;
-    marker.addListener('click', function() {
-      for(aux_marker in markers) {
-        markers[aux_marker].setIcon(pharmacy_icon);
-      }
-      $(".list-group-item").removeClass("active");
-      $("a[data-id='"+pharmacy_id+"']").addClass("active");
-      this.setIcon(pharmacy_icon_big);
-      var container = $('#scroll_area'),
-      scrollTo = $("a[data-id='"+pharmacy_id+"']");
-      container.animate({
-          scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+
+    if(first) {
+      infoWindow = new google.maps.InfoWindow({
+        content: '<h4 class="list-group-item-heading">'
+                  +pharmacy.name+'</h4><p class="list-group-item-text">'
+                  +pharmacy.address+'</p>'
       });
+      infoWindow.open(map, marker);
+    }
+    markers[pharmacy.id] = marker;
+    
+    marker.addListener('click', function() {
+      if(infoWindow) {
+        infoWindow.close();
+      }
+      for(aux_marker in markers) {        
+        markers[aux_marker].setIcon(pharmacy_icon);        
+      }
+      infoWindow = new google.maps.InfoWindow({
+        content: '<h4 class="list-group-item-heading">'
+                  +pharmacy.name+'</h4><p class="list-group-item-text">'
+                  +pharmacy.address+'</p>'
+      });
+      infoWindow.open(map, this);
+      this.setIcon(pharmacy_icon_big);
     });
   }, timeout);
 }
@@ -166,15 +178,6 @@ function getCityName(lat, lng, callback) {
   });
 }
 
-function addPharmacyToList(pharmacy, index) {
-  active = index == 0 ? 'active' : '';
-  $("#pharmacies").append('<a data-id="'+pharmacy.id
-    +'" href="/pharmacies/'+pharmacy.id
-    +'" class="list-group-item '+active+'"><h4 class="list-group-item-heading">'
-    +pharmacy.name+'</h4><p class="list-group-item-text">'
-    +pharmacy.address+'</p></a>');
-}
-
 function loadPharmacies(lat, long, map) {
   $.ajax({
     url: places_url,
@@ -188,9 +191,9 @@ function loadPharmacies(lat, long, map) {
           if(pharmacy.latitude && pharmacy.longitude) {
             position = {lat: pharmacy.latitude, lng: pharmacy.longitude}; 
             first = i==0 ? true : false;      
-            addMarkerWithTimeout(pharmacy.id, position, (i+1)*200, map, first);
+            addMarkerWithTimeout(pharmacy, position, (i+1)*200, map, first);
           }
-          addPharmacyToList(pharmacy, i);                 
+          // addPharmacyToList(pharmacy, i);                 
         }              
       }               
     },          
