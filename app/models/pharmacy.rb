@@ -1,6 +1,7 @@
 class Pharmacy < ActiveRecord::Base
-  # geocoded_by :full_address
-  # after_validation :geocode  
+  geocoded_by :full_address
+  after_validation :geocode
+    
   has_many :comments
 
   validates :name, presence: true
